@@ -9,6 +9,9 @@ from multiprocessing import Pool
 
 
 def load_word_list(filename, quiet=True):
+    """Load a text file of words, each on a separate line, and return a set
+    containing the words.
+    """
     with open(filename) as word_file:
         if not quiet:
             print("Adding words from {}. Please wait.".format(filename))
@@ -16,6 +19,10 @@ def load_word_list(filename, quiet=True):
 
 
 def load_word_graph(filename, quiet=True):
+    """Load a pickle file containing a word graph, indicating words and the
+    connections between them. For more information about the word graph, see
+    the docstring for make_word_graph.
+    """
     with open(filename, "rb") as word_graph_file:
         if not quiet:
             print("Loading word graph from {}.".format(filename))
@@ -23,6 +30,10 @@ def load_word_graph(filename, quiet=True):
 
 
 def save_word_graph(word_graph, filename, quiet=True):
+    """Save a pickle file containing a word graph, indicating words and the
+    connections between them. For more information about the word graph, see
+    the docstring for make_word_graph.
+    """
     with open(filename, "wb") as word_graph_file:
         if not quiet:
             print("Saving word graph to {}.".format(filename))
@@ -30,6 +41,12 @@ def save_word_graph(word_graph, filename, quiet=True):
 
 
 def get_close_words(word, all_words, all_chars):
+    """Take in a word and a collection of words, and return a set of words in
+    the collection that differ by exactly one character. The all_chars
+    parameter should be a collection, ideally a set, containing every character
+    used in all_words. This function can be made to run without all_chars, but
+    it would be much slower.
+    """
     result = set()
     for pos in range(len(word)):
         prefix = word[:pos]
@@ -42,6 +59,12 @@ def get_close_words(word, all_words, all_chars):
 
 
 def make_word_graph(all_words):
+    """Take in a collection of words, ideally a set, and return a dictionary,
+    where the keys are the words, and the values for a key are words in the
+    collection that differ by exactly one character. This function is
+    equivalent to make_word_graph_simple, but it uses parallel execution to
+    run in significantly less time.
+    """
     all_chars = set(chain(*all_words))
     word_list = list(all_words)
     argument_generator = ((w, all_words, all_chars) for w in word_list)
@@ -51,11 +74,23 @@ def make_word_graph(all_words):
 
 
 def make_word_graph_simple(all_words):
+    """Take in a collection of words and return a dictionary whose keys are
+    the words and whose values are words differing by exactly one character.
+    This function is equivalent to make_word_graph. It is not used. It is only
+    here to illustrate the straightforward but slow way to generate the word
+    graph.
+    """
     all_chars = set(chain(*all_words))
     return {w: get_close_words(w, all_words, all_chars) for w in all_words}
 
 
 def find_word_chain(initial, goal, word_graph):
+    """Take in an initial word, a goal word, and a word graph indicating
+    connections between words. Do a breadth-first search to find a list of
+    words from the initial to the goal, where each word is different from the
+    last one by exactly one character, and return the list. If this is not
+    possible, return None.
+    """
     if len(initial) != len(goal):
         return None
     word_queue = deque([initial])
@@ -76,6 +111,7 @@ def find_word_chain(initial, goal, word_graph):
 
 
 def demo(word_graph):
+    """Show word chains between some randomly chosen words."""
     for word_length in range(3, 8):
         words = [w for w in word_graph if len(w) == word_length]
         for _ in range(3):
@@ -85,6 +121,9 @@ def demo(word_graph):
 
 
 def print_word_chain(initial, goal, word_graph):
+    """Shows a nicely formatted word chain between the initial word and the
+    goal word.
+    """
     print('Finding shortest path from "{}" to "{}"'.format(initial, goal))
     path = find_word_chain(initial, goal, word_graph)
     print(path or 'No path found between "{}" and "{}"'.format(initial, goal))
