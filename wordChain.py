@@ -8,21 +8,24 @@ from itertools import chain
 from multiprocessing import Pool
 
 
-def load_word_list(filename):
+def load_word_list(filename, quiet=True):
     with open(filename) as word_file:
-        print("Adding words from {}. Please wait.".format(filename))
+        if not quiet:
+            print("Adding words from {}. Please wait.".format(filename))
         return set(word_file.read().splitlines())
 
 
-def load_word_graph(filename):
+def load_word_graph(filename, quiet=True):
     with open(filename, "rb") as word_graph_file:
-        print("Loading word graph from {}.".format(filename))
+        if not quiet:
+            print("Loading word graph from {}.".format(filename))
         return pickle.load(word_graph_file)
 
 
-def save_word_graph(word_graph, filename):
+def save_word_graph(word_graph, filename, quiet=True):
     with open(filename, "wb") as word_graph_file:
-        print("Saving word graph to {}.".format(filename))
+        if not quiet:
+            print("Saving word graph to {}.".format(filename))
         pickle.dump(word_graph, word_graph_file)
 
 
@@ -105,6 +108,11 @@ if __name__ == "__main__":
         help="Demonstrate this program's functionality by finding paths between some randomly "
             "chosen words.")
     parser.add_argument(
+        "-q",
+        "--quiet_mode",
+        action="store_true",
+        help="Suppress messages indicating when files are saved and loaded.")
+    parser.add_argument(
         "-w",
         "--word_list_files",
         help="Files containing words to be used. Each word must be on a separate line. "
@@ -135,17 +143,17 @@ if __name__ == "__main__":
     if args.word_list_files:
         all_words = set()
         for filename in args.word_list_files:
-            all_words.update(load_word_list(filename))
+            all_words.update(load_word_list(filename, quiet=args.quiet_mode))
         word_graph = make_word_graph(all_words)
     elif args.demo_mode or (args.initial_word and args.goal_word):
         try:
-            word_graph = load_word_graph(args.word_graph_input)
+            word_graph = load_word_graph(args.word_graph_input, quiet=args.quiet_mode)
         except FileNotFoundError:
-            all_words = load_word_list("/usr/share/dict/words")
+            all_words = load_word_list("/usr/share/dict/words", quiet=args.quiet_mode)
             word_graph = make_word_graph(all_words)
     if "all_words" in locals():
         # Save word graph if it may contain new words
-        save_word_graph(word_graph, args.word_graph_output)
+        save_word_graph(word_graph, args.word_graph_output, quiet=args.quiet_mode)
 
     if args.demo_mode:
         demo(word_graph)
