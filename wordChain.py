@@ -7,17 +7,21 @@ from collections import deque
 from itertools import chain
 from multiprocessing import Pool
 
+
 def load_word_list(filename="/usr/share/dict/words"):
     with open(filename) as word_file:
         return set(word_file.read().splitlines())
+
 
 def load_word_graph(filename="wordGraph.pickle"):
     with open(filename, "rb") as word_graph_file:
         return pickle.load(word_graph_file)
 
+
 def save_word_graph(word_graph, filename="wordGraph.pickle"):
     with open(filename, "wb") as word_graph_file:
         pickle.dump(word_graph, word_graph_file)
+
 
 def get_close_words(word, all_words, all_chars):
     result = set()
@@ -30,6 +34,7 @@ def get_close_words(word, all_words, all_chars):
                 result.add(test_word)
     return result
 
+
 def make_word_graph(all_words):
     all_chars = set(chain(*all_words))
     word_list = list(all_words)
@@ -38,9 +43,11 @@ def make_word_graph(all_words):
         word_sets = pool.starmap(get_close_words, argument_generator)
     return dict(zip(word_list, word_sets))
 
+
 def make_word_graph_simple(all_words):
     all_chars = set(chain(*all_words))
     return {w: get_close_words(w, all_words, all_chars) for w in all_words}
+
 
 def find_word_chain(initial, goal, word_graph):
     if len(initial) != len(goal):
@@ -61,6 +68,7 @@ def find_word_chain(initial, goal, word_graph):
                     return list(reversed(result))
     return None
 
+
 def test(word_graph):
     for word_length in range(3, 8):
         words = [w for w in word_graph if len(w) == word_length]
@@ -70,6 +78,7 @@ def test(word_graph):
             result = find_word_chain(initial, goal, word_graph)
             print(result)
             print()
+
 
 if __name__ == "__main__":
     try:
