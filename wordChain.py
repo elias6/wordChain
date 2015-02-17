@@ -16,11 +16,13 @@ def load_word_list(filename):
 
 def load_word_graph(filename):
     with open(filename, "rb") as word_graph_file:
+        print("Loading word graph from {}.".format(filename))
         return pickle.load(word_graph_file)
 
 
 def save_word_graph(word_graph, filename):
     with open(filename, "wb") as word_graph_file:
+        print("Saving word graph to {}.".format(filename))
         pickle.dump(word_graph, word_graph_file)
 
 
