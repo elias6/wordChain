@@ -9,8 +9,8 @@ from multiprocessing import Pool
 
 
 def load_word_list(filename):
-    print("Adding words from {}. Please wait.".format(filename))
     with open(filename) as word_file:
+        print("Adding words from {}. Please wait.".format(filename))
         return set(word_file.read().splitlines())
 
 
