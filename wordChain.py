@@ -8,7 +8,7 @@ from itertools import chain
 from multiprocessing import Pool
 
 
-def load_word_list(filename="/usr/share/dict/words"):
+def load_word_list(filename):
     with open(filename) as word_file:
         return set(word_file.read().splitlines())
 
@@ -86,6 +86,10 @@ def print_word_chain(initial, goal, word_graph):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-w",
+        "--word_list_file",
+        help="File containing words to be used. Each word must be on a separate line.")
     parser.add_argument("initial_word", nargs="?", help="Initial word")
     parser.add_argument("goal_word", nargs="?", help="Goal word")
     args = parser.parse_args()
@@ -93,11 +97,17 @@ if __name__ == "__main__":
     if len([x for x in (args.initial_word, args.goal_word) if x is not None]) == 1:
         parser.error("Initial word and goal word must be given together.")
 
-    try:
-        word_graph = load_word_graph()
-    except FileNotFoundError:
-        all_words = load_word_list()
+    if args.word_list_file:
+        all_words = load_word_list(args.word_list_file)
         word_graph = make_word_graph(all_words)
+    else:
+        try:
+            word_graph = load_word_graph()
+        except FileNotFoundError:
+            all_words = load_word_list("/usr/share/dict/words")
+            word_graph = make_word_graph(all_words)
+    if "all_words" in locals():
+        # Save word graph if it may contain new words
         save_word_graph(word_graph)
 
     if args.initial_word and args.goal_word:
