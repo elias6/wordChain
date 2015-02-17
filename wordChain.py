@@ -87,6 +87,14 @@ def print_word_chain(initial, goal, word_graph):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("initial_word", nargs="?", help="Initial word")
+    parser.add_argument("goal_word", nargs="?", help="Goal word")
+    parser.add_argument(
+        "-d",
+        "--demo_mode",
+        action="store_true",
+        help="Demonstrate this program's functionality by finding paths between some randomly "
+            "chosen words.")
     parser.add_argument(
         "-w",
         "--word_list_files",
@@ -110,14 +118,6 @@ if __name__ == "__main__":
             "word graphs, specify /dev/null or your operating system's equivalent.",
         default="wordGraph.pickle"
     )
-    parser.add_argument("initial_word", nargs="?", help="Initial word")
-    parser.add_argument("goal_word", nargs="?", help="Goal word")
-    parser.add_argument(
-        "-d",
-        "--demo_mode",
-        action="store_true",
-        help="Demonstrate this program's functionality by finding paths between some randomly "
-            "chosen words.")
     args = parser.parse_args()
 
     if len([x for x in (args.initial_word, args.goal_word) if x is not None]) == 1:
