@@ -89,8 +89,15 @@ def print_word_chain(initial, goal, word_graph):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("initial_word", nargs="?", help="Initial word")
-    parser.add_argument("goal_word", nargs="?", help="Goal word")
+    parser.add_argument(
+        "initial_word",
+        nargs="?",
+        help="Initial word.")
+    parser.add_argument(
+        "goal_word",
+        nargs="?",
+        help="Goal word. This must be given if the initial word is given. It must be exactly as "
+            "long as the initial word.")
     parser.add_argument(
         "-d",
         "--demo_mode",
