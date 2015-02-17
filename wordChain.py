@@ -88,8 +88,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-w",
-        "--word_list_file",
-        help="File containing words to be used. Each word must be on a separate line.")
+        "--word_list_files",
+        help="Files containing words to be used. Each word must be on a separate line. "
+            "Multiple files can be specified. "
+            "Example: `%(prog)s -w /usr/share/dict/words -w /usr/share/dict/propernames`.",
+        action="append")
     parser.add_argument("initial_word", nargs="?", help="Initial word")
     parser.add_argument("goal_word", nargs="?", help="Goal word")
     args = parser.parse_args()
@@ -97,8 +100,10 @@ if __name__ == "__main__":
     if len([x for x in (args.initial_word, args.goal_word) if x is not None]) == 1:
         parser.error("Initial word and goal word must be given together.")
 
-    if args.word_list_file:
-        all_words = load_word_list(args.word_list_file)
+    if args.word_list_files:
+        all_words = set()
+        for filename in args.word_list_files:
+            all_words.update(load_word_list(filename))
         word_graph = make_word_graph(all_words)
     else:
         try:
