@@ -137,7 +137,7 @@ if __name__ == "__main__":
         for filename in args.word_list_files:
             all_words.update(load_word_list(filename))
         word_graph = make_word_graph(all_words)
-    else:
+    elif args.demo_mode or (args.initial_word and args.goal_word):
         try:
             word_graph = load_word_graph(args.word_graph_input)
         except FileNotFoundError:
