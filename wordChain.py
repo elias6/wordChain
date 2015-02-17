@@ -125,16 +125,13 @@ if __name__ == "__main__":
         "-g",
         "--word_graph_input",
         help="Pickle file containing word graph with connections between words. "
-            "This usually does not need to be explicitly specified.",
-        default="wordGraph.pickle")
+            "This usually does not need to be explicitly specified.")
     parser.add_argument(
         "-o",
         "--word_graph_output",
         help="Name for pickle file used to save word graph so subsequent searches will be much "
             "faster. This usually does not need to be explicitly specified. To disable saving "
-            "word graphs, specify /dev/null or your operating system's equivalent.",
-        default="wordGraph.pickle"
-    )
+            "word graphs, specify /dev/null or your operating system's equivalent.")
     args = parser.parse_args()
 
     if len([x for x in (args.initial_word, args.goal_word) if x is not None]) == 1:
@@ -147,17 +144,19 @@ if __name__ == "__main__":
         word_graph = make_word_graph(all_words)
     elif args.demo_mode or (args.initial_word and args.goal_word):
         try:
-            word_graph = load_word_graph(args.word_graph_input, quiet=args.quiet_mode)
+            graph_filename = args.word_graph_input or "wordGraph.pickle"
+            word_graph = load_word_graph(graph_filename, quiet=args.quiet_mode)
         except FileNotFoundError:
             all_words = load_word_list("/usr/share/dict/words", quiet=args.quiet_mode)
             word_graph = make_word_graph(all_words)
     if "all_words" in locals():
         # Save word graph if it may contain new words
-        save_word_graph(word_graph, args.word_graph_output, quiet=args.quiet_mode)
+        graph_filename = args.word_graph_output or "wordGraph.pickle"
+        save_word_graph(word_graph, graph_filename, quiet=args.quiet_mode)
 
     if args.demo_mode:
         demo(word_graph)
     elif args.initial_word and args.goal_word:
         print_word_chain(args.initial_word, args.goal_word, word_graph)
-    else:
+    elif not (args.word_list_files or args.word_graph_input or args.word_graph_output):
         parser.print_help()
