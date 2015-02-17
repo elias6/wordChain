@@ -14,7 +14,7 @@ def load_word_list(filename):
         return set(word_file.read().splitlines())
 
 
-def load_word_graph(filename="wordGraph.pickle"):
+def load_word_graph(filename):
     with open(filename, "rb") as word_graph_file:
         return pickle.load(word_graph_file)
 
@@ -94,6 +94,12 @@ if __name__ == "__main__":
             "Multiple files can be specified. "
             "Example: `%(prog)s -w /usr/share/dict/words -w /usr/share/dict/propernames`.",
         action="append")
+    parser.add_argument(
+        "-g",
+        "--word_graph_input",
+        help="Pickle file containing word graph with connections between words. "
+            "This usually does not need to be explicitly specified. ",
+        default="wordGraph.pickle")
     parser.add_argument("initial_word", nargs="?", help="Initial word")
     parser.add_argument("goal_word", nargs="?", help="Goal word")
     args = parser.parse_args()
@@ -108,7 +114,7 @@ if __name__ == "__main__":
         word_graph = make_word_graph(all_words)
     else:
         try:
-            word_graph = load_word_graph()
+            word_graph = load_word_graph(args.word_graph_input)
         except FileNotFoundError:
             all_words = load_word_list("/usr/share/dict/words")
             word_graph = make_word_graph(all_words)
