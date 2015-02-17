@@ -19,7 +19,7 @@ def load_word_graph(filename):
         return pickle.load(word_graph_file)
 
 
-def save_word_graph(word_graph, filename="wordGraph.pickle"):
+def save_word_graph(word_graph, filename):
     with open(filename, "wb") as word_graph_file:
         pickle.dump(word_graph, word_graph_file)
 
@@ -102,6 +102,14 @@ if __name__ == "__main__":
         help="Pickle file containing word graph with connections between words. "
             "This usually does not need to be explicitly specified. ",
         default="wordGraph.pickle")
+    parser.add_argument(
+        "-o",
+        "--word_graph_output",
+        help="Name for pickle file used to save word graph so subsequent searches will be much "
+            "faster. This usually does not need to be explicitly specified. To disable saving "
+            "word graphs, specify /dev/null or your operating system's equivalent.",
+        default="wordGraph.pickle"
+    )
     parser.add_argument("initial_word", nargs="?", help="Initial word")
     parser.add_argument("goal_word", nargs="?", help="Goal word")
     args = parser.parse_args()
@@ -122,7 +130,7 @@ if __name__ == "__main__":
             word_graph = make_word_graph(all_words)
     if "all_words" in locals():
         # Save word graph if it may contain new words
-        save_word_graph(word_graph)
+        save_word_graph(word_graph, args.word_graph_output)
 
     if args.initial_word and args.goal_word:
         print_word_chain(args.initial_word, args.goal_word, word_graph)
