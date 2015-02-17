@@ -159,12 +159,12 @@ if __name__ == "__main__":
     parser.add_argument(
         "-w",
         "--word_list_files",
+        action="append",
         help="Files containing words to be used. Each word must be on a separate line. "
             "Multiple files can be specified. "
             "Example: `%(prog)s -w /usr/share/dict/words -w /usr/share/dict/propernames`. "
             "If no word list files are specified and no word graph files are found, "
-            "/usr/share/dict/words will be used as the word list file.",
-        action="append")
+            "/usr/share/dict/words will be used as the word list file.")
     parser.add_argument(
         "-g",
         "--word_graph_input",
