@@ -70,7 +70,7 @@ def find_word_chain(initial, goal, word_graph):
     return None
 
 
-def test(word_graph):
+def demo(word_graph):
     for word_length in range(3, 8):
         words = [w for w in word_graph if len(w) == word_length]
         for _ in range(3):
@@ -112,6 +112,12 @@ if __name__ == "__main__":
     )
     parser.add_argument("initial_word", nargs="?", help="Initial word")
     parser.add_argument("goal_word", nargs="?", help="Goal word")
+    parser.add_argument(
+        "-d",
+        "--demo_mode",
+        action="store_true",
+        help="Demonstrate this program's functionality by finding paths between some randomly "
+            "chosen words.")
     args = parser.parse_args()
 
     if len([x for x in (args.initial_word, args.goal_word) if x is not None]) == 1:
@@ -132,7 +138,9 @@ if __name__ == "__main__":
         # Save word graph if it may contain new words
         save_word_graph(word_graph, args.word_graph_output)
 
-    if args.initial_word and args.goal_word:
+    if args.demo_mode:
+        demo(word_graph)
+    elif args.initial_word and args.goal_word:
         print_word_chain(args.initial_word, args.goal_word, word_graph)
     else:
-        test(word_graph)
+        parser.print_help()
