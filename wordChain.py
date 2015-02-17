@@ -74,17 +74,33 @@ def test(word_graph):
         words = [w for w in word_graph if len(w) == word_length]
         for _ in range(3):
             initial, goal = random.sample(words, 2)
-            print("Finding shortest path from \"{}\" to \"{}\"".format(initial, goal))
-            result = find_word_chain(initial, goal, word_graph)
-            print(result)
+            print_word_chain(initial, goal, word_graph)
             print()
 
 
+def print_word_chain(initial, goal, word_graph):
+    print('Finding shortest path from "{}" to "{}"'.format(initial, goal))
+    path = find_word_chain(initial, goal, word_graph)
+    print(path or 'No path found between "{}" and "{}"'.format(initial, goal))
+
+
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("initial_word", nargs="?", help="Initial word")
+    parser.add_argument("goal_word", nargs="?", help="Goal word")
+    args = parser.parse_args()
+
+    if len([x for x in (args.initial_word, args.goal_word) if x is not None]) == 1:
+        parser.error("Initial word and goal word must be given together.")
+
     try:
         word_graph = load_word_graph()
     except FileNotFoundError:
         all_words = load_word_list()
         word_graph = make_word_graph(all_words)
         save_word_graph(word_graph)
-    test(word_graph)
+
+    if args.initial_word and args.goal_word:
+        print_word_chain(args.initial_word, args.goal_word, word_graph)
+    else:
+        test(word_graph)
