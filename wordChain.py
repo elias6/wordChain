@@ -132,8 +132,9 @@ def print_word_chain(initial, goal, word_graph):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="%(prog)s takes in two words of equal length and finds the shortest sequence "
-            "of transformations going from the first to the second. The word at each step "
-            "must be in a dictionary. Example: `./%(prog)s frog goat` will produce this output:\n"
+            "of transformations going from the first to the second, changing only one letter at a "
+            "time. The word at each step must be in a dictionary. Example: `./%(prog)s frog goat` "
+            "will produce this output:\n"
             "['frog', 'grog', 'grot', 'grat', 'goat']")
     parser.add_argument(
         "initial_word",
