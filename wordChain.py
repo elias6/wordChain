@@ -185,16 +185,15 @@ if __name__ == "__main__":
         all_words = set()
         for filename in args.word_list_files:
             all_words.update(load_word_list(filename, quiet=args.quiet))
-        word_graph = make_word_graph(all_words)
     elif args.demo or (args.initial_word and args.goal_word):
         try:
             graph_filename = args.word_graph_input or "wordGraph.pickle"
             word_graph = load_word_graph(graph_filename, quiet=args.quiet)
         except FileNotFoundError:
             all_words = load_word_list("/usr/share/dict/words", quiet=args.quiet)
-            word_graph = make_word_graph(all_words)
     if "all_words" in locals():
-        # Save word graph if it may contain new words
+        # Create and save word graph if it may contain new words
+        word_graph = make_word_graph(all_words)
         graph_filename = args.word_graph_output or "wordGraph.pickle"
         save_word_graph(word_graph, graph_filename, quiet=args.quiet)
 
