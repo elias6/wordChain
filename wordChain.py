@@ -147,13 +147,13 @@ if __name__ == "__main__":
             "long as the initial word.")
     parser.add_argument(
         "-d",
-        "--demo_mode",
+        "--demo",
         action="store_true",
         help="Demonstrate this program's functionality by finding paths between some randomly "
             "chosen words.")
     parser.add_argument(
         "-q",
-        "--quiet_mode",
+        "--quiet",
         action="store_true",
         help="Suppress messages indicating when files are saved and loaded.")
     parser.add_argument(
@@ -184,21 +184,21 @@ if __name__ == "__main__":
     if args.word_list_files:
         all_words = set()
         for filename in args.word_list_files:
-            all_words.update(load_word_list(filename, quiet=args.quiet_mode))
+            all_words.update(load_word_list(filename, quiet=args.quiet))
         word_graph = make_word_graph(all_words)
-    elif args.demo_mode or (args.initial_word and args.goal_word):
+    elif args.demo or (args.initial_word and args.goal_word):
         try:
             graph_filename = args.word_graph_input or "wordGraph.pickle"
-            word_graph = load_word_graph(graph_filename, quiet=args.quiet_mode)
+            word_graph = load_word_graph(graph_filename, quiet=args.quiet)
         except FileNotFoundError:
-            all_words = load_word_list("/usr/share/dict/words", quiet=args.quiet_mode)
+            all_words = load_word_list("/usr/share/dict/words", quiet=args.quiet)
             word_graph = make_word_graph(all_words)
     if "all_words" in locals():
         # Save word graph if it may contain new words
         graph_filename = args.word_graph_output or "wordGraph.pickle"
-        save_word_graph(word_graph, graph_filename, quiet=args.quiet_mode)
+        save_word_graph(word_graph, graph_filename, quiet=args.quiet)
 
-    if args.demo_mode:
+    if args.demo:
         demo(word_graph)
     elif args.initial_word and args.goal_word:
         print_word_chain(args.initial_word, args.goal_word, word_graph)
