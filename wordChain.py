@@ -41,11 +41,11 @@ def save_word_graph(word_graph, filename, quiet=True):
 
 
 def get_close_words(word, all_words, all_chars):
-    """Take in a word and a collection of words, and return a set of words in
-    the collection that differ by exactly one character. The all_chars
-    parameter should be a collection, ideally a set, containing every character
-    used in all_words. This function can be made to run without all_chars, but
-    it would be much slower.
+    """Take in a word and a collection of words, ideally a set, and return a
+    set of words in the collection that differ by exactly one character. The
+    all_chars parameter should be a collection containing every character used
+    in all_words. This function can be made to run without all_chars, but it
+    would be much slower.
     """
     result = set()
     for pos in range(len(word)):
@@ -121,8 +121,8 @@ def demo(word_graph):
 
 
 def print_word_chain(initial, goal, word_graph):
-    """Shows a nicely formatted word chain between the initial word and the
-    goal word.
+    """Show a nicely formatted word chain between the initial word and the goal
+    word.
     """
     print('Finding shortest path from "{}" to "{}"'.format(initial, goal))
     path = find_word_chain(initial, goal, word_graph)
